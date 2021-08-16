@@ -1,3 +1,22 @@
+/* Copyright (C) 2021 Greenbone Networks GmbH
+ *
+ * SPDX-License-Identifier: GPL-2.0-or-later
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+
 #include "eulabeia/types.h"
 #include <eulabeia/client.h>
 
@@ -283,7 +302,7 @@ void builder_add_target(JsonBuilder *builder,
 		json_builder_set_member_name(builder, "id");
 		json_builder_add_string_value(builder, target->id);
 	}
-	if (modify){
+	if (modify) {
 		json_builder_set_member_name(builder, "values");
 		json_builder_begin_object(builder);
 	}
@@ -315,18 +334,20 @@ void builder_add_target(JsonBuilder *builder,
 		json_builder_set_member_name(builder, "exclude");
 		builder_add_hosts(builder, target->exclude);
 	}
-	if (modify){
+	if (modify) {
 		json_builder_end_object(builder);
 	}
 }
 
-void builder_add_scan(JsonBuilder *builder, const struct EulabeiaScan *scan, const int modify)
+void builder_add_scan(JsonBuilder *builder,
+		      const struct EulabeiaScan *scan,
+		      const int modify)
 {
 	if (scan->id) {
 		json_builder_set_member_name(builder, "id");
 		json_builder_add_string_value(builder, scan->id);
 	}
-	if (modify){
+	if (modify) {
 		json_builder_set_member_name(builder, "values");
 		json_builder_begin_object(builder);
 	}
@@ -343,7 +364,6 @@ void builder_add_scan(JsonBuilder *builder, const struct EulabeiaScan *scan, con
 	}
 	if (modify) {
 		json_builder_end_object(builder);
-
 	}
 }
 
@@ -375,7 +395,8 @@ char *json_builder_to_str(JsonBuilder *builder)
 }
 
 char *eulabeia_scan_message_to_json(const struct EulabeiaMessage *msg,
-				    const struct EulabeiaScan *scan, const int modify)
+				    const struct EulabeiaScan *scan,
+				    const int modify)
 {
 	JsonBuilder *b;
 	char *json_str;
@@ -392,7 +413,8 @@ char *eulabeia_scan_message_to_json(const struct EulabeiaMessage *msg,
 }
 
 char *eulabeia_target_message_to_json(const struct EulabeiaMessage *msg,
-				      const struct EulabeiaTarget *target, const int modify)
+				      const struct EulabeiaTarget *target,
+				      const int modify)
 {
 	JsonBuilder *b;
 	char *json_str;
