@@ -21,12 +21,14 @@
 
 TestSuite *publish_tests();
 TestSuite *progress_tests();
+TestSuite *eulabeia_json_tests();
 
 int main(int argc, char **argv)
 {
 	TestSuite *suite = create_test_suite();
 	add_suite(suite, publish_tests());
 	add_suite(suite, progress_tests());
+	add_suite(suite, eulabeia_json_tests());
 	if (argc > 1) {
 		return run_single_test(suite, argv[1], create_text_reporter());
 	}

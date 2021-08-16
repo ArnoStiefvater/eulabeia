@@ -18,10 +18,24 @@
 
 # see /opt/local/share/cmake-3.16/Modules/FindGTest.cmake
 find_package(cgreen 1.1.0)
-# Now simply link against gtest as needed. Eg
-add_executable(all_tests src/all.c src/start_scan.c src/scan_porgress.c)
-target_link_libraries(all_tests ${CGREEN_LIBRARIES} Eulabeia::eulabeia)
 
+# tracking of allocated memory only possible with CGREEN_NO_FORK and NUMA
+if(DEFINED ENV{CGREEN_NO_FORK})
+    add_definitions (-DCGREEN_NO_FORK="1")
+endif()
+find_library (NUMA numa)
+message (STATUS "Looking for numa... ${NUMA}")
+if (NOT NUMA)
+  message (STATUS "Optional numa library is required for memory allocation checks.")
+else (NOT NUMA)
+    add_definitions (-DHAVE_NUMA="1")
+    set (TEST_LINKER_WRAP_OPTIONS
+    "-Wl,-wrap,calloc,-wrap,free")
+endif (NOT NUMA)
+
+# Now simply link against gtest as needed. Eg
+add_executable(all_tests src/all.c src/eulabeia_json_tests src/start_scan.c src/scan_porgress.c)
+target_link_libraries(all_tests ${NUMA} ${CGREEN_LIBRARIES} ${TEST_LINKER_WRAP_OPTIONS} Eulabeia::eulabeia)
 
 add_test(NAME test_start_scan_fail
     COMMAND all_tests start_scan_returns_error_on_publish_fail)
