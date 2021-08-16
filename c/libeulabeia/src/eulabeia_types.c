@@ -24,6 +24,8 @@
 #include <string.h>
 #include <time.h>
 
+#include <glib.h>
+
 char *eulabeia_scan_state_to_str(enum eulabeia_scan_state srs)
 {
 	switch (srs) {
@@ -115,13 +117,23 @@ void eulabeia_status_destroy(struct EulabeiaStatus **status)
 
 void eulabeia_hosts_destroy(struct EulabeiaHosts **hosts)
 {
+	struct EulabeiaHost *p_index, *p_orig;
 	int i;
-	if (hosts == NULL || *hosts == NULL)
+
+	if (hosts == NULL || *hosts == NULL) {
+		g_warning("hosts == NULL || *hosts == NULL");
 		return;
-	for (i = 0; i < (*hosts)->len; i++) {
-		free((*hosts)->hosts->address);
-		free((*hosts)->hosts);
 	}
+
+	p_index = (*hosts)->hosts;
+	p_orig = (*hosts)->hosts;
+	/* Free addresses of EulabeiaHost structs in array */
+	for (; i < (*hosts)->len; p_index++, i++) {
+		free(p_index->address);
+	}
+	/* Free EulabeiaHost array */
+	free(p_orig);
+	/* Free EulabeiaHosts struct */
 	free(*hosts);
 	*hosts = NULL;
 }
@@ -129,26 +141,44 @@ void eulabeia_hosts_destroy(struct EulabeiaHosts **hosts)
 void eulabeia_plugins_destroy(struct EulabeiaPlugins **plugins)
 {
 	int i;
+	struct EulabeiaPlugin *p_index, *p_orig;
+
 	if (plugins == NULL || *plugins == NULL)
 		return;
-	for (i = 0; i < (*plugins)->len; i++) {
-		free((*plugins)->plugins->oid);
-		free((*plugins)->plugins);
+
+	p_index = (*plugins)->plugins;
+	p_orig = (*plugins)->plugins;
+	/* Free oids of EulabeiaPlugin structs in array */
+	for (; i < (*plugins)->len; p_index++, i++) {
+		free(p_index->oid);
 	}
+	/* Free EulabeiaPlugin array */
+	free(p_orig);
+	/* Free EulabeiaPlugins struct */
 	free(*plugins);
+
 	*plugins = NULL;
 }
 
 void eulabeia_ports_destroy(struct EulabeiaPorts **ports)
 {
 	int i;
+	struct EulabeiaPort *p_index, *p_orig;
+
 	if (ports == NULL || *ports == NULL)
 		return;
-	for (i = 0; i < (*ports)->len; i++) {
-		free((*ports)->ports->port);
-		free((*ports)->ports);
+
+	p_index = (*ports)->ports;
+	p_orig = (*ports)->ports;
+	/* Free port of EulabeiaPort structs in array */
+	for (; i < (*ports)->len; p_index++, i++) {
+		free(p_index->port);
 	}
+	/* Free EulabeiaPort array */
+	free(p_orig);
+	/* Free EulabeiaPorts struct */
 	free(*ports);
+
 	*ports = NULL;
 }
 
